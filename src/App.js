@@ -20,8 +20,20 @@ class App extends Component {
    });
   }
 
-  onButtonClick() { // Button click handler
-    console.log('You want to ', this.state.newItemValue);
+  onTaskSubmit(e) {
+    e.preventDefault()
+    this.setState({
+      tasks: this.state.tasks.concat(this.state.newItemValue),
+      newItemValue: ""
+    })
+  }
+
+  onTaskClick(index, e) {
+    var head = this.state.tasks.slice(0, index)
+    var tail = this.state.tasks.slice(index + 1, this.state.tasks.length)
+    this.setState({
+      tasks: head.concat(tail)
+    })
   }
 
   render() {
@@ -32,14 +44,16 @@ class App extends Component {
           <h2>My To-Do List</h2>
         </div>
         <div>
-          <input type="text" placeholder="I need to. . ." onChange={this.onNewValue.bind(this)} />
-          <button onClick={this.onButtonClick.bind(this)}>Add</button>
+        <form onSubmit={this.onTaskSubmit.bind(this)}>
+          <input type="text" placeholder="I need to. . ." value={this.state.newItemValue} onChange={this.onNewValue.bind(this)} />
+          <button>Add</button>
+        </form>
         </div>
 
         <div className="AList">
           <ul>
-          {this.props.tasks.map(function(each){
-            return (<li>{each}</li>)
+          {this.state.tasks.map((task, index) => {
+            return (<li onClick={this.onTaskClick.bind(this, index)} key={index}>{task}</li>)
           })}
           </ul>
         </div>
